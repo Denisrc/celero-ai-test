@@ -1,4 +1,5 @@
 from utils.read_helper import ReadHelper
+from preprocess.vocabulary import VocabularyBuilder
 import argparse
 
 def main():
@@ -21,6 +22,9 @@ def main():
     # If --train was passed, train the model
     if args.train:
         readHelper.read_files_folder(args.train)
+        vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
+        vocabulary_builder.count_vectorizer(100)
+        print(vocabulary_builder.vocabulary)
 
     # If --test was passed, test the model
     if args.test:
