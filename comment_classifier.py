@@ -25,13 +25,14 @@ def main():
         readHelper.read_files_folder(args.train)
         vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
         vocabulary_builder.count_vectorizer(100)
-        print(vocabulary_builder.vocabulary)
+
         feature_extractor = FeatureExtractor(readHelper.comments_category["positives"], vocabulary_builder.vocabulary)
+        feature_extractor.sentiment_methods = "vader"
         feature_extractor.extract_features()
         feature_extractor.write_to_file('data/train.txt', "positive")
-        feature_extractor = FeatureExtractor(readHelper.comments_category["negatives"], vocabulary_builder.vocabulary)
-        feature_extractor.extract_features()
-        feature_extractor.write_to_file('data/train.txt', "negative")
+        #feature_extractor = FeatureExtractor(readHelper.comments_category["negatives"], vocabulary_builder.vocabulary)
+        #feature_extractor.extract_features()
+        #feature_extractor.write_to_file('data/train.txt', "negative")
 
     # If --test was passed, test the model
     if args.test:
