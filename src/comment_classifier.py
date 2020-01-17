@@ -28,12 +28,12 @@ def main():
     if args.train:
         readHelper.read_files_folder(args.train)
         vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
-        vocabulary_builder.count_vectorizer(100)
+        vocabulary_builder.count_vectorizer(200)
         
         vocabulary_builder.save_vocabulary("data/vocabulary.txt")
 
         feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
-        feature_extractor.sentiment_methods = "vader, swn"
+        feature_extractor.sentiment_methods = "frequency"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/train.txt")
 
@@ -51,7 +51,7 @@ def main():
             return
         
         feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary)
-        feature_extractor.sentiment_methods = "vader, swn"
+        feature_extractor.sentiment_methods = "frequency"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/test.txt")
 
@@ -61,6 +61,7 @@ def main():
         classification.gaussianNaiveBayes()
         classification.bernoulliNaiveBayes()
         classification.knn()
+        classification.svm()
 
     # If --run was passed, run the model
     if args.run:
