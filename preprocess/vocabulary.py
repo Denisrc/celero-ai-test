@@ -1,6 +1,11 @@
 
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.tag.perceptron import PerceptronTagger
+from nltk.stem.porter import PorterStemmer
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import RegexpTokenizer
 
 # Generate a vocabulary of the comments, to be analyzed
 class VocabularyBuilder:
@@ -24,9 +29,16 @@ class VocabularyBuilder:
     def apply_vectorizer(self, comments):
         # Stop Words is to ignore words like: is, a, an, and, this, ...
         stopWords = set(stopwords.words('english'))
-        vectorizer = CountVectorizer(
+
+        # Remove number and symbols
+        token = RegexpTokenizer(r'[a-zA-Z]+')
+        if self.vocabulary_size == 0:
+            vectorizer = CountVectorizer(stop_words=stopWords, tokenizer = token.tokenize)
+        else:
+            vectorizer = CountVectorizer(
                     max_features=self.vocabulary_size, 
-                    stop_words=stopWords
+                    stop_words=stopWords,
+                    tokenizer = token.tokenize
                 )
         vectorizer.fit_transform(comments)
         features = vectorizer.get_feature_names()
@@ -38,3 +50,34 @@ class VocabularyBuilder:
             if f not in self.vocabulary:
                 self.vocabulary.append(f)
             
+    def stemming(self):
+        porter_stemmer = PorterStemmer()
+        stem_vocabulary = []
+        for v in self.vocabulary:
+            stem_vocabulary.append(porter_stemmer.stem(v))
+        print("Stemming Vocabulary")
+        print(stem_vocabulary)
+
+    def lemmatize(self):
+        tagger = PerceptronTagger()
+
+        wordnet_lemmatizer = WordNetLemmatizer()
+        lemmatize_vocabulary = []
+        for v in self.vocabulary:
+            for word, tag in tagger.tag(word_tokenize(v)):
+                try:
+                    lemmatize_vocabulary.append(wordnet_lemmatizer.lemmatize(word, self.get_part_of_speech(tag)))
+                except:
+                    continue
+        print("Lemmatize Vocabulary")
+        print(lemmatize_vocabulary)
+
+    def get_part_of_speech(self, tag):
+        if 'VB' in tag:
+            return 'v'
+        if 'NN' in tag:
+            return 'n'
+        if 'JJ' in tag:
+            return 'a'
+        if 'RB' in tag:
+            return 'r'
