@@ -60,4 +60,10 @@ class Classification:
 
         print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
 
- 
+    def bernoulliNaiveBayes(self):
+        print("Running Bernoulli Naive Bayes")
+
+        nb = BernoulliNB().fit(self.X_train, self.y_train)
+        predicted = nb.predict(self.X_test)
+
+        print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))

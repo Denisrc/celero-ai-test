@@ -59,6 +59,7 @@ def main():
         classification = Classification("data/train.txt", "data/test.txt")
         classification.multinomialNaiveBayes()
         classification.gaussianNaiveBayes()
+        classification.bernoulliNaiveBayes()
 
     # If --run was passed, run the model
     if args.run:
