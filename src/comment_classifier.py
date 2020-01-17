@@ -33,7 +33,7 @@ def main():
         vocabulary_builder.save_vocabulary("data/vocabulary.txt")
 
         feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
-        feature_extractor.sentiment_methods = "vader"
+        feature_extractor.sentiment_methods = "vader, swn"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/train.txt")
 
@@ -51,7 +51,7 @@ def main():
             return
         
         feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary)
-        feature_extractor.sentiment_methods = "vader"
+        feature_extractor.sentiment_methods = "vader, swn"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/test.txt")
 

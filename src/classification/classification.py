@@ -88,3 +88,23 @@ class Classification:
 
         print("\tKNN: ", metrics.accuracy_score(self.y_test, predicted))
 
+    def svm(self):
+        print("Running SVM")
+        #svm_parameters = {'kernel': ('linear', 'rbf'), 'C':[1,5]}
+        svc = SVC(probability=True, kernel='rbf')
+        #svm_classifier = GridSearchCV(svc, svm_parameters)
+        #svm_classifier.fit(self.X_train, self.y_train)
+        svc.fit(self.X_train, self.y_train)
+        
+        predited = svc.predict(self.X_test)
+
+        print("\tSVM - RBF: ", metrics.accuracy_score(self.y_test, predited))
+
+        svc = SVC(probability=True, kernel='linear')
+        #svm_classifier = GridSearchCV(svc, svm_parameters)
+        #svm_classifier.fit(self.X_train, self.y_train)
+        svc.fit(self.X_train, self.y_train)
+        
+        predited = svc.predict(self.X_test)
+
+        print("\tSVM - RBF: ", metrics.accuracy_score(self.y_test, predited))
