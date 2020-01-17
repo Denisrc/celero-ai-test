@@ -60,6 +60,7 @@ def main():
         classification.multinomialNaiveBayes()
         classification.gaussianNaiveBayes()
         classification.bernoulliNaiveBayes()
+        classification.knn()
 
     # If --run was passed, run the model
     if args.run:

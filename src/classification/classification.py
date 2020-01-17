@@ -67,3 +67,24 @@ class Classification:
         predicted = nb.predict(self.X_test)
 
         print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+
+    def knn(self, bagging=False):
+        print("Running KKN")
+
+        knn = None
+        #if bagging:
+        knn = BaggingClassifier(KNeighborsClassifier(n_neighbors=5), n_jobs=-1)
+        knn.fit(self.X_train, self.y_train)
+        
+        predicted = knn.predict(self.X_test)
+
+        print("\tKNN Bagging: ", metrics.accuracy_score(self.y_test, predicted))
+
+        #else:
+        knn = KNeighborsClassifier(n_neighbors=5, algorithm='auto', n_jobs=-1)
+        knn.fit(self.X_train, self.y_train)
+        
+        predicted = knn.predict(self.X_test)
+
+        print("\tKNN: ", metrics.accuracy_score(self.y_test, predicted))
+
