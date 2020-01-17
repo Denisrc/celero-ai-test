@@ -13,7 +13,7 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--train", help="Folder with the text files for training")
     group.add_argument("--test", help="Folder with the text files for testing (Needs the training)")
-    group.add_argument("-c", "--classification", action='store_true', help="Run the classification using the data generated from --train and --test")
+    group.add_argument("-c", "--classification", action='store_true', help="Run the classification with multiple methods, using the data generated from --train and --test")
     group.add_argument("-r", "--run", help="File to classified (Needs the training)")
 
     args = parser.parse_args()
@@ -58,6 +58,7 @@ def main():
     if args.classification:
         classification = Classification("data/train.txt", "data/test.txt")
         classification.multinomialNaiveBayes()
+        classification.gaussianNaiveBayes()
 
     # If --run was passed, run the model
     if args.run:

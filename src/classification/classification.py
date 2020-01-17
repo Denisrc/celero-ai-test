@@ -1,6 +1,11 @@
 import pandas
 from utils.file_helper import FileHelper
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
+from sklearn.svm import SVC, LinearSVC
+from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import BaggingClassifier, VotingClassifier, GradientBoostingClassifier
+from sklearn.multiclass import OneVsRestClassifier
 from sklearn import metrics
 
 class Classification:
@@ -41,6 +46,18 @@ class Classification:
 
     def multinomialNaiveBayes(self):
         print("Running Multinomial Naive Bayes")
-        clf = MultinomialNB().fit(self.X_train, self.y_train)
-        predicted = clf.predict(self.X_test)
-        print("MultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+
+        nb = MultinomialNB().fit(self.X_train, self.y_train)
+        predicted = nb.predict(self.X_test)
+
+        print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+
+    def gaussianNaiveBayes(self):
+        print("Running Gaussian Naive Bayes")
+
+        nb = GaussianNB().fit(self.X_train, self.y_train)
+        predicted = nb.predict(self.X_test)
+
+        print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+
+ 
