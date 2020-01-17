@@ -1,4 +1,4 @@
-
+import io
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -81,3 +81,9 @@ class VocabularyBuilder:
             return 'a'
         if 'RB' in tag:
             return 'r'
+
+    def save_vocabulary(self, path):
+        with io.open(path, 'w') as output_file:
+            separator = ', '
+            joined_vocabulary = separator.join(self.vocabulary)
+            output_file.write(joined_vocabulary)

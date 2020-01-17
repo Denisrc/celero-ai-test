@@ -1,4 +1,6 @@
+import io
 from utils.read_helper import ReadHelper
+from utils.file_helper import FileHelper
 from preprocess.vocabulary import VocabularyBuilder
 from preprocess.extract_features import FeatureExtractor
 import argparse
@@ -26,18 +28,36 @@ def main():
         vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
         vocabulary_builder.count_vectorizer(100)
         
-        feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
-        feature_extractor.sentiment_methods = "vader"
-        feature_extractor.extract_features()
-        feature_extractor.write_to_file('data/train.txt')
+        #vocabulary_builder.save_vocabulary("data/vocabulary.txt")
+
+        #feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
+        #feature_extractor.sentiment_methods = "vader"
+        #feature_extractor.extract_features()
+        #feature_extractor.write_to_file("data/train.txt")
 
     # If --test was passed, test the model
     if args.test:
         readHelper.read_files_folder(args.test)
+        vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
+        vocabulary_builder.count_vectorizer(100)
+        
+        vocabulary = []
+
+        try:
+            line_read = FileHelper.read_from_file("data/vocabulary.txt")
+            vocabulary = line_read.split(', ')
+        except FileNotFoundError:
+            print("Error in running tests. Did you run train first?")
+            return
+        #feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary)
+        #feature_extractor.sentiment_methods = "vader"
+        #feature_extractor.extract_features()
+        #feature_extractor.write_to_file("data/test.txt")
 
     # If --run was passed, run the model
     if args.run:
-        readHelper.read_file(args.run)
+        return
+        #readHelper.read_file(args.run)
 
 if __name__ == "__main__":
     main()
