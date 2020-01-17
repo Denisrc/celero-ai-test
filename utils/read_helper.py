@@ -4,6 +4,10 @@ import io
 class ReadHelper:
     def __init__(self):
         self.comments = []
+        self.comments_category = {
+            "positives": [],
+            "negatives": []
+        }
 
     def read_files_folder(self, path):
         # Walk over all files in directory and subdirectory
@@ -12,6 +16,12 @@ class ReadHelper:
                 continue
             for filename in filenames:
                 self.read_file(dirpath + "/" + filename)
+                
+                if 'neg' in dirpath:
+                    self.comments_category["negatives"].append(self.comments[-1])
+                if 'pos' in dirpath:
+                    self.comments_category["positives"].append(self.comments[-1])
+                self.comments[-1]
 
     # Open a file and add its contents to comments list
     def read_file(self, path):
