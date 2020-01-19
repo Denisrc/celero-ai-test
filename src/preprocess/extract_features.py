@@ -30,16 +30,17 @@ class FeatureExtractor:
                 
                     comment = self.comments[features_key][i]
 
-                    values_list = self.extracted_features[features_key].iloc[[i]].values[0]
+                    
                     
                     if features_key == "positives":
                         class_name = '1'
                     elif features_key == "negatives":
                         class_name = '-1'
 
-                    for value in values_list:
-                        output_file.write(str(value) + ' ')
-
+                    if "frequency" in self.sentiment_methods:
+                        values_list = self.extracted_features[features_key].iloc[[i]].values[0]
+                        for value in values_list:
+                            output_file.write(str(value) + ' ')
                     if "vader" in self.sentiment_methods:
                         scores = self.sentiment_analyser.vader_score(comment)
                         self.write_scores(output_file, scores)
