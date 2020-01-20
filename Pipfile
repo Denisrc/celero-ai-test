@@ -4,9 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
 
 [packages]
 pandas = "*"
+nltk = "*"
+numpy = "*"
+scikit-learn = "*"
 
 [requires]
 python_version = "3.6"

@@ -6,6 +6,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import BaggingClassifier, VotingClassifier, GradientBoostingClassifier
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn import metrics
 
 class Classification:
@@ -81,7 +82,7 @@ class Classification:
             print("\tKNN Bagging: ", metrics.accuracy_score(self.y_test, predicted))
 
         else:
-            knn = KNeighborsClassifier(n_neighbors=15, algorithm='auto', n_jobs=-1)
+            knn = KNeighborsClassifier(n_neighbors=10, algorithm='auto', n_jobs=-1)
             knn.fit(self.X_train, self.y_train)
             
             predicted = knn.predict(self.X_test)
@@ -108,3 +109,29 @@ class Classification:
         predited = svc.predict(self.X_test)
 
         print("\tSVM - RBF: ", metrics.accuracy_score(self.y_test, predited))
+
+    def multilayer_perceptron(self):
+        print("Running Voting MLP")
+        mlp = BaggingClassifier(MLPClassifier(solver='lbfgs', alpha=1e-5, activation=('logistic'), hidden_layer_sizes=(30), learning_rate_init=0.001, max_iter=100000, random_state=1))
+        
+        mlp.fit(self.X_train, self.y_train)
+
+        predited = mlp.predict(self.X_test)
+        print("\tMLP: ", metrics.accuracy_score(self.y_test, predited))
+
+
+    def voting_classifier(self):
+        print("Running Voting Classifier")
+        classiers = [
+            ('multinomial', MultinomialNB()),
+            ('bernoulli', BernoulliNB()),
+            ('gaussian', GaussianNB())
+        ]
+
+        voting_classifier = VotingClassifier(classiers, n_jobs=-1, weights=[2, 2, 1])
+
+        voting_classifier.fit(self.X_train, self.y_train)
+
+        predited = voting_classifier.predict(self.X_test)
+        print("\tVoting: ", metrics.accuracy_score(self.y_test, predited))
+

@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from .sentiment_analyser import SentimentAnalyzer
+from nltk.corpus import stopwords
 
 class FeatureExtractor:
 
@@ -22,15 +23,13 @@ class FeatureExtractor:
             self.extracted_features[comment_key] = pd.DataFrame(fit.toarray(), columns=vectorizer.get_feature_names())
 
     def write_to_file(self, path):
-        with io.open(path, 'a') as output_file:
+        with io.open(path, 'w') as output_file:
             for features_key in self.extracted_features:
-                print("Processing {} comments".format(features_key))
+                print("Extracting {} features".format(features_key))
                 for i in range(0, len(self.comments[features_key])):
                     class_name = ''
                 
                     comment = self.comments[features_key][i]
-
-                    
                     
                     if features_key == "positives":
                         class_name = '1'

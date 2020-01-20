@@ -28,12 +28,15 @@ def main():
     if args.train:
         readHelper.read_files_folder(args.train)
         vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
-        vocabulary_builder.count_vectorizer(200)
+        vocabulary_builder.preprocess()
+        vocabulary_builder.count_vectorizer(100)
         
         vocabulary_builder.save_vocabulary("data/vocabulary.txt")
 
-        feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
-        feature_extractor.sentiment_methods = "frequency"
+        # feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
+        feature_extractor = FeatureExtractor(vocabulary_builder.preprocessed_comments, vocabulary_builder.vocabulary)
+        feature_extractor.sentiment_methods = "frequency, vader, swn"
+        # feature_extractor.sentiment_methods = "vader"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/train.txt")
 
@@ -41,6 +44,7 @@ def main():
     if args.test:
         readHelper.read_files_folder(args.test)
         vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
+        vocabulary_builder.preprocess()
         vocabulary = []
 
         try:
@@ -50,8 +54,9 @@ def main():
             print("Error in running tests. Did you run train first?")
             return
         
-        feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary)
-        feature_extractor.sentiment_methods = "frequency"
+        # feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary)
+        feature_extractor = FeatureExtractor(vocabulary_builder.preprocessed_comments, vocabulary)
+        feature_extractor.sentiment_methods = "frequency, vader, swn"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/test.txt")
 
@@ -62,6 +67,8 @@ def main():
         classification.bernoulliNaiveBayes()
         classification.knn()
         classification.svm()
+        classification.voting_classifier()
+        classification.multilayer_perceptron()
 
     # If --run was passed, run the model
     if args.run:
