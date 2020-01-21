@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import io
 from utils.read_helper import ReadHelper
 from utils.file_helper import FileHelper
