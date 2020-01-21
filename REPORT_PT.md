@@ -63,4 +63,5 @@ A seguir os resultados obtidos por cada classificador:
 | SVM - RBF               | 0.702    | 0.66302944| 0.82152 |
 | SMV - Linear            | 0.75448  | 0.07453717| 0.77304 |
 
+
 Devido ao Bernoulli Naive Bayes ter obtido a maior acuracia, este método foi adotado para realizar a classificação dos comentários
