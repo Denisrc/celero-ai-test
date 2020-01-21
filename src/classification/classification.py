@@ -7,17 +7,20 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import BaggingClassifier, VotingClassifier, GradientBoostingClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 
+
 class Classification:
-    def __init__(self, train_file, test_file):
+    def __init__(self, train_file, test_file=None):
         self.X_train = []
         self.y_train = []
         self.y_test = []
         self.X_test = []
 
         self.read_train(train_file)
-        self.read_test(test_file)
+        if test_file is not None:
+            self.read_test(test_file)
 
     def read_train(self, train_file):
         data_read = FileHelper.read_from_file(train_file)
@@ -52,6 +55,8 @@ class Classification:
         predicted = nb.predict(self.X_test)
 
         print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tMultinomialNB Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tMultinomialNB Recall: ", metrics.recall_score(self.y_test, predicted))
 
     def gaussianNaiveBayes(self):
         print("Running Gaussian Naive Bayes")
@@ -59,7 +64,9 @@ class Classification:
         nb = GaussianNB().fit(self.X_train, self.y_train)
         predicted = nb.predict(self.X_test)
 
-        print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tGaussianNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tGaussianNB Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tGaussianNB Recall: ", metrics.recall_score(self.y_test, predicted))
 
     def bernoulliNaiveBayes(self):
         print("Running Bernoulli Naive Bayes")
@@ -67,7 +74,9 @@ class Classification:
         nb = BernoulliNB().fit(self.X_train, self.y_train)
         predicted = nb.predict(self.X_test)
 
-        print("\tMultinomialNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tBernoulliNB Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tBernoulliNB Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tBernoulliNB Recall: ", metrics.recall_score(self.y_test, predicted))
 
     def knn(self, bagging=False):
         print("Running KKN")
@@ -79,15 +88,31 @@ class Classification:
             
             predicted = knn.predict(self.X_test)
 
-            print("\tKNN Bagging: ", metrics.accuracy_score(self.y_test, predicted))
+            print("\tKNN Bagging Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+            print("\tKNN Bagging Precision: ", metrics.precision_score(self.y_test, predicted))
+            print("\tKNN Bagging Recall: ", metrics.recall_score(self.y_test, predicted))
 
         else:
-            knn = KNeighborsClassifier(n_neighbors=10, algorithm='auto', n_jobs=-1)
+            knn = KNeighborsClassifier(n_neighbors=5, algorithm='auto', n_jobs=-1)
             knn.fit(self.X_train, self.y_train)
             
             predicted = knn.predict(self.X_test)
 
-            print("\tKNN: ", metrics.accuracy_score(self.y_test, predicted))
+            print("\tKNN Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+            print("\tKNN Precision: ", metrics.precision_score(self.y_test, predicted))
+            print("\tKNN Recall: ", metrics.recall_score(self.y_test, predicted))
+
+    def decision_tree(self):
+        print("Running Decision Tree")
+        decision_tree = DecisionTreeClassifier()
+
+        decision_tree.fit(self.X_train, self.y_train)
+
+        predicted = decision_tree.predict(self.X_test)
+
+        print("\tDecision Tree Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tDecision Tree Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tDecision Tree Recall: ", metrics.recall_score(self.y_test, predicted))
 
     def svm(self):
         print("Running SVM")
@@ -97,18 +122,22 @@ class Classification:
         #svm_classifier.fit(self.X_train, self.y_train)
         svc.fit(self.X_train, self.y_train)
         
-        predited = svc.predict(self.X_test)
+        predicted = svc.predict(self.X_test)
 
-        print("\tSVM - RBF: ", metrics.accuracy_score(self.y_test, predited))
+        print("\tSVM - RBF Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tSVM - RBF Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tSVM - RBF Recall: ", metrics.recall_score(self.y_test, predicted))
 
         svc = SVC(probability=True, kernel='linear')
         #svm_classifier = GridSearchCV(svc, svm_parameters)
         #svm_classifier.fit(self.X_train, self.y_train)
         svc.fit(self.X_train, self.y_train)
         
-        predited = svc.predict(self.X_test)
+        predicted = svc.predict(self.X_test)
 
-        print("\tSVM - RBF: ", metrics.accuracy_score(self.y_test, predited))
+        print("\tSVM - Linear Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tSVM - Linear Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tSVM - Linear Recall: ", metrics.recall_score(self.y_test, predicted))
 
     def multilayer_perceptron(self):
         print("Running Voting MLP")
@@ -116,8 +145,8 @@ class Classification:
         
         mlp.fit(self.X_train, self.y_train)
 
-        predited = mlp.predict(self.X_test)
-        print("\tMLP: ", metrics.accuracy_score(self.y_test, predited))
+        predicted = mlp.predict(self.X_test)
+        print("\tMLP: ", metrics.accuracy_score(self.y_test, predicted))
 
 
     def voting_classifier(self):
@@ -125,13 +154,20 @@ class Classification:
         classiers = [
             ('multinomial', MultinomialNB()),
             ('bernoulli', BernoulliNB()),
-            ('gaussian', GaussianNB())
+            ('svm', SVC(probability=True, kernel='linear'))
         ]
 
-        voting_classifier = VotingClassifier(classiers, n_jobs=-1, weights=[2, 2, 1])
+        voting_classifier = VotingClassifier(classiers, n_jobs=-1, weights=[1, 2, 2])
 
         voting_classifier.fit(self.X_train, self.y_train)
 
-        predited = voting_classifier.predict(self.X_test)
-        print("\tVoting: ", metrics.accuracy_score(self.y_test, predited))
+        predicted = voting_classifier.predict(self.X_test)
+        print("\tVoting Accuracy: ", metrics.accuracy_score(self.y_test, predicted))
+        print("\tVoting Precision: ", metrics.precision_score(self.y_test, predicted))
+        print("\tVoting Recall: ", metrics.recall_score(self.y_test, predicted))
 
+    def predict_comment(self, features):
+        nb = BernoulliNB().fit(self.X_train, self.y_train)
+        predicted = nb.predict(features)
+
+        print("Classification: {}".format(predicted[0]))

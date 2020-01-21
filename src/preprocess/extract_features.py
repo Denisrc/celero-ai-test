@@ -51,6 +51,26 @@ class FeatureExtractor:
                     if i % 1000 == 0:
                         print("\tProcessed {} of {} comments".format(i, len(self.comments[features_key])))
 
+    def features_to_string(self, features_key="key"):
+
+        comment = self.comments[features_key][0]
+
+        features = []
+        if "frequency" in self.sentiment_methods:
+            values_list = self.extracted_features[features_key].iloc[[0]].values[0]
+            for value in values_list:
+                features.append(value)
+        if "vader" in self.sentiment_methods:
+            scores = self.sentiment_analyser.vader_score(comment)
+            for score in scores:
+                features.append(score)
+        if "swn" in self.sentiment_methods:
+            scores = self.sentiment_analyser.senti_word_net_score(comment)
+            for score in scores:
+                features.append(score)
+
+        return features
+
     def write_scores(self, file_handler, scores):
         for score in scores:
             file_handler.write(str(score) + ' ')

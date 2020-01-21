@@ -30,13 +30,13 @@ def main():
         readHelper.read_files_folder(args.train)
         vocabulary_builder = VocabularyBuilder(readHelper.comments_category, True)
         vocabulary_builder.preprocess()
-        vocabulary_builder.count_vectorizer(100)
+        vocabulary_builder.count_vectorizer(25)
         
         vocabulary_builder.save_vocabulary("data/vocabulary.txt")
 
         # feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary_builder.vocabulary)
         feature_extractor = FeatureExtractor(vocabulary_builder.preprocessed_comments, vocabulary_builder.vocabulary)
-        feature_extractor.sentiment_methods = "frequency, vader, swn"
+        feature_extractor.sentiment_methods = "frequency"
         # feature_extractor.sentiment_methods = "vader"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/train.txt")
@@ -57,7 +57,7 @@ def main():
         
         # feature_extractor = FeatureExtractor(readHelper.comments_category, vocabulary)
         feature_extractor = FeatureExtractor(vocabulary_builder.preprocessed_comments, vocabulary)
-        feature_extractor.sentiment_methods = "frequency, vader, swn"
+        feature_extractor.sentiment_methods = "frequency"
         feature_extractor.extract_features()
         feature_extractor.write_to_file("data/test.txt")
 
@@ -66,15 +66,40 @@ def main():
         classification.multinomialNaiveBayes()
         classification.gaussianNaiveBayes()
         classification.bernoulliNaiveBayes()
-        classification.knn()
+        classification.knn(bagging=True)
         classification.svm()
         classification.voting_classifier()
-        classification.multilayer_perceptron()
+        #classification.multilayer_perceptron()
+        #classification.decision_tree()
 
     # If --run was passed, run the model
     if args.run:
+        comment = FileHelper.read_from_file(args.run)
+        vocabulary_builder = VocabularyBuilder(None, True)
+        print("Preprocessing comment...")
+        comment = vocabulary_builder.preprocess_comment(comment)
+
+        try:
+            line_read = FileHelper.read_from_file("data/vocabulary.txt")
+            vocabulary = line_read.split(', ')
+        except FileNotFoundError:
+            print("Error in running tests. Did you run train first?")
+            return
+
+        comments = {
+            "key": [comment]
+        }
+
+        print("Extracting features...")
+        feature_extractor = FeatureExtractor(comments, vocabulary)
+        feature_extractor.sentiment_methods = "frequency"
+        feature_extractor.extract_features()
+        features = feature_extractor.features_to_string()
+
+        classification = Classification("data/train.txt")
+        classification.predict_comment([features])
+
         return
-        #readHelper.read_file(args.run)
 
 if __name__ == "__main__":
     main()
